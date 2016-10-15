@@ -1,0 +1,463 @@
+#include <iostream>
+#include <time.h>
+#include <windows.h>
+#include <cstdlib>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+    string nick;
+    int balance, i = 0, endOfProgram();
+
+    string takeNickname();
+
+    void clean()
+        {
+            system("cls");
+        }
+
+    void    mainMenu(), check1( short ), chosenOption( short ), gameMenu(), showHighscores(), showAuthors(),
+            showScores( fstream & ), checkBalance(), chooseMode( char ), roll ( int & ), checkResult( char, int, int ),
+            checkResultN( int, int, int ), chooseBid( int & ), bidSecurity( int ), endOfGame(), checkRecords(),
+            fillTables( int [] , string [] ), compareRecords( int [], string [] ), saveRecord( int [] , string [] );
+
+int main()
+{
+    takeNickname( );
+    mainMenu();
+
+    return 0;
+}
+
+    string takeNickname()
+        {
+            cout << "Please give me your nick: ";
+            cin >> nick;
+            return nick;
+        }
+
+    void mainMenu()
+        {
+                clean();
+
+                short option;
+
+            cout << "What you want to do, " << nick << "?\n"
+            "[1]. Start the game.\n"
+            "[2]. Show highscores.\n"
+            "[3]. About author.\n"
+            "[4]. Exit the program.\n\n";
+
+                cin >> option;
+                    check1( option );
+        }
+
+    void check1( short option)
+        {
+            if(!cin.good())
+                    {
+                        clean();
+                        cout << "The choice must be a number!";
+                        Sleep(1500);
+                        clean();
+                        cin.clear();
+                        cin.sync();
+                        mainMenu();
+                    } else chosenOption( option );
+        }
+
+            void chosenOption( short option )
+                {
+                    switch( option )
+                        {
+                            default:
+                                {
+                                    clean();
+                                    cout << "Incorrect choice!";
+                                    Sleep(1500);
+                                    mainMenu();
+                                }
+
+                            case 1:
+                                {
+                                    clean();
+                                    balance = 2000;
+                                        cout << "Hello, " << nick << "!\n" << endl;
+                                    checkBalance();
+                                    Sleep(1500);
+                                    clean();
+
+                                    gameMenu();
+                                }
+
+                            case 2:
+                                {
+                                    showHighscores();
+                                }
+
+                            case 3:
+                                {
+                                    showAuthors();
+                                }
+
+                            case 4:
+                                {
+                                    endOfProgram();
+                                }
+                        }
+                }
+
+
+    void gameMenu()
+        {
+
+            clean();
+            char mode;
+
+                checkBalance();
+
+                cout << "\nPlease choose now the option: \n\n"
+                "[L]ow (number 1-3) // // (win - bid x2); \n"
+                "[H]igh (liczby 4-6) // (win - bid x2); \n"
+                "[N]umber // (win - bid x5);\n\n"
+                "[E]nd of game;\n\n";
+
+                cin >> mode;
+
+                chooseMode( mode );
+        }
+
+                void checkBalance()
+                    {
+                        extern int balance;
+                        if( balance >= 500 )
+                            {
+                                cout << "Your balance is now: " << balance << " credits!" << endl;
+                            } else
+                                {
+                                        cout << "You don't have enough credits to bid! Game over!";
+                                    Sleep(1500);
+                                    mainMenu();
+                                }
+                    }
+
+            void chooseMode( char check )
+                {
+
+                    if ( check == 'e' || check == 'E' )
+                        {
+                                cout << "\nEnding of game.";
+
+                            Sleep(1500);
+                            clean();
+
+                            endOfGame();
+                        } else
+                            {
+                                int number, bid;
+                                if ( check == 'H' || check == 'h' )
+                                    {
+                                        chooseBid( bid );
+
+                                        roll( number );
+                                        char ticket = 'H';
+
+                                        checkResult( ticket, number, bid );
+                                    }
+
+                                if ( check == 'L' || check == 'l' )
+                                    {
+                                        chooseBid( bid );
+
+                                        roll( number );
+                                        char ticket = 'L';
+
+                                        checkResult( ticket, number, bid );
+
+                                    }
+
+                                if ( check == 'N' || check == 'n' )
+                                    {
+                                        int ticket;
+
+                                            cout << "Podaj swoj typ: ";
+                                        cin >> ticket;
+
+                                        chooseBid( bid );
+
+                                        roll( number );
+
+                                        checkResultN( ticket, number, bid );
+                                    }
+
+                                    cout << "\nIncorrect choice...";
+                                    Sleep(1500);
+                                    clean();
+
+                                gameMenu();
+                            }
+                }
+
+                void chooseBid( int & bid )
+                    {
+                        clean();
+
+                            cout << "How much you bet? (minimum 500 kredytow!) ";
+                        cin >> bid;
+
+                        bidSecurity( bid );
+                    }
+
+                    void bidSecurity(int bid)
+                        {
+                            if(!(cin.good()))
+                                {
+                                    clean();
+
+                                        cout << "Bid must be a number!\n\n";
+                                    Sleep(1500);
+
+                                    clean();
+
+                                    cin.clear();
+                                    cin.sync();
+
+                                    chooseBid( bid );
+                                }
+
+                            if (bid < 500)
+                                {
+                                    clean();
+
+                                    cout << "Bid must be more than 500!\n\n";
+                                    Sleep(1500);
+
+                                    clean();
+
+                                    chooseBid( bid );
+                                }
+                        }
+
+                void roll( int & number )
+                    {
+                        srand( time( NULL ) );
+
+                        clean();
+
+                            cout << "Rolling: 3...\n";
+                        Sleep( 1000 );
+                            cout << "2...\n";
+                        Sleep( 1000 );
+                            cout << "1...\n";
+                        Sleep( 1000 );
+
+                        number = rand() % 6 + 1;
+
+                        clean();
+
+                        i++;
+                    }
+
+                    void checkResult( char ticket, int number, int bid )
+                        {
+                            clean();
+
+                            if (ticket == 'H')
+                                {
+                                    if( number > 3 )
+                                        {
+                                                    cout << "The drawn number is: " << number << endl;
+                                                    cout << "You win! :)\n" << 2 * bid << " credits is added to your balance!\n";
+                                                balance += (2* bid);
+                                        }else
+                                            {
+                                                    cout << "The drawn number is: " << number << endl;
+                                                    cout << "You lose! :(\n"<< bid << " credits is taken from your balance!\n";
+                                                balance -= bid;
+                                            }
+                                }
+
+                            if (ticket == 'L')
+                                {
+                                    if( number < 4 )
+                                        {
+                                                    cout << "The drawn number is: " << number << endl;
+                                                    cout << "You win! :)\n" << 2 * bid << " credits is added to your balance!\n";
+                                                balance += ( 2 * bid );
+                                        }else
+                                            {
+                                                    cout << "The drawn number is: " << number << endl;
+                                                    cout << "You lose! :(\n"<< bid << " credits is taken from your balance!\n";
+                                                balance -= bid;
+                                            }
+                                }
+
+                            Sleep(3000);
+
+                            gameMenu();
+                        }
+
+                    void checkResultN( int ticket, int number, int bid )
+                        {
+                        if (number == ticket)
+                            {
+                                        cout << "The drawn number is: " << number << endl;
+                                        cout << "You win! :)\n" << 5 * bid << " credits is added to your balance!\n";
+                                    balance += ( 5 * bid );
+                            }else
+                                {
+                                        cout << "The drawn number is: " << number << endl;
+                                        cout << "You lose! :(\n"<< bid << " credits is taken from your balance!\n";
+                                    balance -= bid;
+                                }
+                        Sleep(1500);
+
+                        gameMenu();
+                    }
+
+            void endOfGame()
+                {
+                    cout << "You balance is " << balance << " credits in " << i << " draws!\nCogratulation!\n\n\n";
+                    Sleep(3000);
+                    checkRecords();
+                }
+
+                void checkRecords()
+                    {
+                        int tableBalance[5];
+                        string tableNick[5];
+
+                        fillTables( tableBalance, tableNick );
+
+                        compareRecords( tableBalance, tableNick );
+                    }
+
+                    void fillTables( int tableBalance[], string tableNick[] )
+                        {
+                                fstream file;
+                            file.open( "highscores.txt", ios::in );
+
+                            for(int i = 0; i < 5; i++)
+                                {
+                                    file >> tableBalance[i] >> tableNick[i];
+                                }
+                        }
+
+                    void compareRecords( int tableBalance[], string tableNick[] )
+                        {
+                            for (int i = 0; i < 5; i++)
+                                {
+                                    if (balance > tableBalance[i])
+                                        {
+                                            for(int j = 4; j >= i; j--)
+                                                {
+                                                    tableBalance[j] = tableBalance[j--];
+                                                    tableNick[j] = tableNick[j--];
+
+                                                }
+                                        tableBalance[i] = balance;
+                                        tableNick[i] = nick;
+
+                                        saveRecord( tableBalance, tableNick );
+
+                                            cout << "The result is saved in Highscores!\n";
+                                            
+
+                                        Sleep(1500);
+                                        system("cls");
+                                        mainMenu();
+
+                                        }
+                                }
+
+                            cout << "Your result is too small to put it in the best results.\n";
+                            Sleep(3000);
+
+                            mainMenu();
+                        }
+
+                    void saveRecord ( int tableBalance[], string tableNick[] )
+                        {
+                                fstream file;
+                                file.close();
+                                file.open( "highscores.txt", ios::out | ios::trunc );
+                                file.close();
+                                file.open( "highscores.txt", ios::out | ios::app );
+                                file.seekg( 0, ios_base::beg );
+
+                            for (int i = 0; i < 5; i++)
+                                {
+                                    file << tableBalance[i] << " " << tableNick[i] << "\n";
+                                    file.flush();
+                                }
+
+            file.close();
+                        }
+
+    void showHighscores()
+        {
+            clean();
+            fstream file;
+                file.open("highscores.txt", ios::in );
+
+                showScores( file );
+
+            Sleep(1500);
+            system("pause");
+
+                file.close();
+
+            clean();
+
+            mainMenu();
+        }
+
+                void showScores(fstream & file)
+                    {
+                        int tableBalance[5];
+                        string tableNick[5];
+
+                            cout << "::Best Results::\n======================================\n    Nick  Result\n" << endl;
+
+                        for(int i = 0; i < 5; i++)
+                            {
+                                file >> tableBalance[i] >> tableNick[i];
+                                cout << i + 1 << ". " << tableNick[i] << " " << tableBalance[i] << "." << endl;
+                            }
+
+                            cout << "\n\n";
+                    }
+
+
+    void showAuthors()
+        {
+            clean();
+
+                cout << "Version: 1.1(15.10.2016r.\n\n";
+            Sleep(1500);
+                cout << "Author: Sigielik // 14.X.2016r.\n";
+            Sleep(1500);
+                cout << "Contact: Sarmiczek@gmail.com\n\n";
+            Sleep(1500);
+                cout << "Thank you for using my game. Have a nice day :).\n\n";
+            Sleep(1500);
+
+            system("Pause");
+
+            clean();
+
+            mainMenu();
+        }
+
+    int endOfProgram()
+        {
+            clean();
+                cout << "Thank you for using my game. Good bye :).\n";
+
+            Sleep(1500);
+            system("pause");
+
+            exit(0);
+        }
+

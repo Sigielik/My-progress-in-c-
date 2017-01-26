@@ -1,0 +1,33 @@
+#include <iostream>
+
+using namespace std;
+
+int main() {
+
+	struct Tdata {
+		unsigned long	niebieski : 6,
+			: 4,
+			zielony : 5,
+			: 1,
+			czerwony : 3;
+	};
+
+	union data
+	{
+		long pelna;
+		Tdata podzielona;
+	};
+
+	data data_urodzin;
+
+	cout << "Podaj swoja date urodzin w formacie DDMMRRRR: " << endl;
+	cin >> data_urodzin.pelna;
+
+	cout << "Niebieski: " << data_urodzin.podzielona.niebieski << ". Zielony: "
+		<< data_urodzin.podzielona.zielony << ". Czerwony: " << data_urodzin.podzielona.czerwony << endl;
+
+	system("Pause");
+
+
+	return 0;
+}
